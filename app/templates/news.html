@@ -1,0 +1,27 @@
+{% extends "layout.html" %}
+{% block title %} ニュース | アンサンブル・シマエナガ {% endblock %}
+{% block content %}
+<p class="fw-100 fs-64 lh-1 font-gothic text-start mb-1 mb-md-3 ">News</p>
+  <div class="container-fluid py-3 py-md-5">
+    <div class="row justify-content-center align-items-center text-center">
+      <div class="col-12 col-md-10">
+        {% for post in posts %}
+          <div class="button news-box d-flex align-items-center">
+            <a href="">
+              <div class="text-start m-100 w-100 pl-40px">
+                <p class="fs-6 fs-md-5 mb-1 mb-md-2 text-truncate text-black">{{ post.title }}</p>
+                <p class="fs-14px m-0 text-black">{{ post.date_str }}</p>
+              </div>
+            </a>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    
+  </div>
+  <div class="pagination-box d-flex justify-content-center ">
+    {{ pagination.links }}
+  </div>
+  
+{% endblock %}

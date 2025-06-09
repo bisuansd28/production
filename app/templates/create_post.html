@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <a href="{{ url_for('main.admin') }}">admin</a>
+    <h1>投稿</h1>
+    <form method="post" novalidate enctype="multipart/form-data">
+        {{form.title.label}} : {{form.title()}}
+        {% for error in form.title.errors %}
+        <span>{{error}}</span>
+        {% endfor %}
+        <br>
+        {{form.content.label}} : {{form.content(id="text-area")}}
+        {% for error in form.content.errors %}
+        <span>{{error}}</span>
+        {% endfor %}
+        <br>
+        {{form.media.label}} : {{form.media()}}
+        {% for error in form.media.errors %}
+        <span>{{error}}</span>
+        {% endfor %}
+        <br>
+        <div id="file-field" style="display: none;">
+            {{form.file.label}} : {{form.file()}}
+            {% for error in form.file.errors %}
+            <span>{{error}}</span>
+        {% endfor %}
+        </div>
+        <div id="youtube-field" style="display: none;">
+        <br>
+        {{form.youtube.label}} : {{form.youtube()}}
+        {% for error in form.youtube.errors %}
+        <span>{{error}}</span>
+        {% endfor %}
+        </div>
+        {{form.date.label}} : {{form.date()}}
+        {% for error in form.date.errors %}
+        <span>{{error}}</span>
+        {% endfor %}
+        <br>
+
+        {{form.tags.label}} : {{form.tags()}}
+        {% for error in form.tags.errors %}
+        <span>{{error}}</span>
+        {% endfor %}
+        <br>
+        {{form.submit()}}
+        {{form.hidden_tag()}}
+    </form>
+    <script src="{{ url_for('static', filename='js/create_post.js') }}"></script>
+    <script src="https://unpkg.com/autosize@4.0.2/dist/autosize.min.js"></script>
+    <script>
+        autosize(document.getElementById('text-area'));
+    </script>
+</body>
+</html>

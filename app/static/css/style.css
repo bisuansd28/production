@@ -1,0 +1,122 @@
+@charset "utf-8";
+
+.bc{
+	background-color: #d0e7e1;
+}
+.fs-64{
+    font-size: 32px;
+}
+.font-gothic {
+  font-family: 'Century Gothic', "游ゴシック体", YuGothic, "游ゴシック Medium", "Yu Gothic Medium", "游ゴシック", "Yu Gothic", sans-serif;
+}
+.font-mintyo{
+	font-family: 'Noto Sans JP', sans-serif;
+
+
+}
+.w-200{
+    width: 100%;
+}
+.yajirusi{
+	width: 42px;
+	height: 42px;
+	border-radius: 23px;
+	background-color: whitesmoke;
+	text-align: center;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	margin-left: 16px;
+}
+a:hover .yajirusi{
+	background-color: #8ea588;
+	transition: 0.2s;
+}
+a:hover .opacity{
+	opacity: 0.7;
+	transition: 0.2s;
+}
+.yajirusi p{
+	color:#8ea588;
+	transition: 0.2s;
+}
+a:hover .yajirusi p{
+	color:whitesmoke;
+	transition: 0.2s;
+}
+.fs-14px{
+	font-size: 14px;
+}
+.news-box{
+	height:90px;
+	cursor: pointer;
+	border-bottom: rgba(0, 0, 0, 0.3) solid 1px;
+}
+.news-box:first-child {
+	border-top: rgba(0, 0, 0, 0.3) solid 1px;
+}
+.news-box:hover{
+	background-color: #c1d5d0;
+}
+.pl-40px{
+	padding:0 20px;
+}
+.fw-md-bold{
+	font-weight: normal;
+}
+hr{
+	background-color: rgba(0, 0, 0, 0.3);
+}
+.mb-line{
+	border-bottom: rgba(0, 0, 0, 0.3) solid 1px;
+}
+.pagination .page-link {
+	color: black;
+	background-color: #d0e7e1;
+}
+.pagination .page-item.active .page-link {
+	font-weight: bold;
+	background-color: #d0e7e1;
+	border-color: #d0e7e1;
+}
+.pagination .page-item:not(.active) .page-link:hover {
+	color: black;
+	text-decoration: underline !important;
+}
+.page-link:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+@media (min-width: 768px){
+	.news-box{
+	height:110px;
+	cursor: pointer;
+	border-bottom: rgba(0, 0, 0, 0.3) solid 1px;
+	}
+	.fs-md-5{
+		font-size: 1.25rem !important;
+	}
+	.fs-64{
+		font-size: 64px;
+	}
+	.w-200{
+    width: 200px;
+	}
+	.fw-md-bold{
+		font-weight: bold;
+	}
+	.mb-line{
+		border: none;
+	}
+	.pl-40px{
+	padding:0 40px;
+	}
+}
+
+.concert-image{
+	width: 100%;
+  	background-color: white;
+  	outline: 1px solid rgba(0, 0, 0, 0.3);
+	border: 1px white solid;
+}

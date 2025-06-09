@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <a href="{{ url_for('main.admin') }}">admin</a>
+    <h1>ユーザーリスト</h1>
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <ul>
+                {% for message in messages %}
+                    <li>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+    {% if current_user.id == "taiyo" %}
+        <a href="{{ url_for('main.create_user') }}">ユーザー追加</a>
+    {% endif %}
+    <ul>
+        {% for user in users %}
+        <li>
+            {{ user.id }} : {{ user.name }}
+            {% if current_user.id == "taiyo" %}
+                <a href="{{ url_for('main.edit_user', id=user.id) }}">編集</a>
+                <a href="{{ url_for('main.delete_user', id=user.id) }}">削除</a>
+            {% endif %}
+        </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

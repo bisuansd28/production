@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>ログイン</h1>
+    <form method="post" novalidate>
+        {{form.id.label}} : {{form.id()}}
+        {% for error in form.id.errors %}
+        <span>{{error}}</span>
+        {% endfor %}
+        <br>
+        {{form.pw.label}} : {{form.pw()}}
+        {% for error in form.pw.errors %}
+        <span>{{error}}</span>
+        {% endfor %}
+        <br>
+        {{form.submit()}}
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    {% if category == "success" %}
+                        <p>{{message}}</p>
+                    {% else %}
+                        <p style="color:red">{{message}}</p>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        
+        {{form.hidden_tag()}}
+    </form>
+</body>
+</html>

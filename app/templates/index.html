@@ -1,0 +1,95 @@
+{% extends "layout.html" %}
+{% block title %} アンサンブル・シマエナガ {% endblock %}
+{% block content %}
+  <div class="top-image">
+    <img src="static/images/top.jpg" alt="" class="w-100">
+  </div>
+
+  <div class="container-fluid py-3 py-md-5">
+    <div class="row justify-content-center align-items-center text-center">
+      <div class="col-0 col-md-1"></div>
+      <div class="col-12 col-md-4">
+        <div class="w-200 mr-auto mx-md-auto d-flex d-md-block align-items-end ps-3 ps-md-0">
+          <p class="fw-100 fs-64 lh-1 font-gothic text-start mb-1 mb-md-3 ">News</p>
+          <p class="fw-md-bold lh-1 fs-6 font-gothic text-start mb-1 mb-md-3 ms-2 ms-md-0">ニュース</p>
+          <a href="{{ url_for('main.news') }}" class="d-flex justify-content-end align-items-center fw-bold lh-1 fs-6 font-gothic d-none d-md-flex">
+            <p class="text-black opacity">もっとみる</p>
+            <div class="yajirusi">
+              <p class="fs-4">➜</p>
+            </div>
+          </a>
+        </div>
+      </div>
+      <div class="col-12 col-md-5">
+        {% for post in posts %}
+          <div class="button news-box d-flex align-items-center">
+            <a href="" class="w-100">
+              <div class="text-start m-100 w-100 pl-40px min-w-0">
+                <p class="fs-6 fs-md-5 mb-1 mb-md-2 text-truncate text-black d-block w-100">{{ post.title }}</p>
+                <p class="fs-14px text-black">{{ post.date_str }}</p>
+              </div>
+            </a>
+          </div>
+        {% endfor %}
+      </div>
+      <div class="col-0 col-md-2"></div>
+      <div class="col-12 d-flex d-md-none justify-content-end mt-3 me-4">
+        <a href="{{ url_for('main.news') }}" class="d-flex justify-content-end align-items-center fw-bold lh-1 fs-6 font-gothic">
+          <p class="text-black text-decoration-underline opacity">もっとみる→</p>
+        </a>
+      </div>
+    </div>
+  </div>
+  <div class="d-none d-md-flex">
+    <hr class="mx-auto w-75">
+  </div>
+  <div class="container-fluid bc py-4">
+    <div class="mb-0 justify-content-center align-items-center text-center">
+      <p class="fs-2 mb-line text-start text-md-center ps-3 ps-md-0 mb-3">アンサンブル・シマエナガ</p>
+      <div class="pl-40px d-none d-md-block">
+        <p class="mb-4">2020年11月に関東圏の大学生を中心に発足した混声合唱団</p>
+        <p class="mb-4">発起人である川口直希が音楽監督を務め、指揮も担う</p>
+        <p class="mb-4">現在は都内を拠点とし大学生から社会人の約20名で活動中</p>
+        <p class="mb-4">これまでに東京都合唱コンクール銅賞・はこね学生音楽祭金賞を受賞</p>
+        <p class="mb-0">1人1人が表現者として音楽を追求する団体を目指す</p>
+      </div>
+      <div class="pl-40px d-md-none text-start">
+        <p class="mb-4">2020年11月に関東圏の大学生を中心に発足した混声合唱団。発起人である川口直希が音楽監督を務め、指揮も担う。</p>
+        <p class="mb-4">現在は都内を拠点とし大学生から社会人の約20名で活動中。</p>
+        <p class="">これまでに東京都合唱コンクール銅賞・はこね学生音楽祭金賞を受賞。1人1人が表現者として音楽を追求する団体を目指す</p>
+      </div>
+    </div>
+  </div>
+  <div class="d-none d-md-flex">
+    <hr class="mx-auto w-75">
+  </div>
+  <div class="container-fluid bc py-4">
+    <div class="row justify-content-center align-items-center text-center">
+      <div class="col-12 col-md-1">
+        <p class="fs-2 mb-line text-start text-md-center ps-3 ps-md-0 d-block d-md-none mb-3">演奏会情報</p>
+      </div>
+      <div class="col-12 col-md-4 pl-40px">
+        <a href="">
+          <img src="../static/images/concert3.jpg" alt="" class="concert-image">
+        </a>
+      </div>
+      <div class="col-12 col-md-4">
+        <div class="w-200 mr-auto mx-md-auto d-flex d-md-block align-items-end ps-3 ps-md-0 d-none d-md-block">
+          <p class="fw-100 fs-1 lh-1 font-mintyo text-start mb-1 mb-md-4">演奏会情報</p>
+          <a href="news.html" class="d-flex justify-content-end align-items-center fw-bold lh-1 fs-6 font-gothic d-none d-md-flex">
+            <p class="text-black opacity">もっとみる</p>
+            <div class="yajirusi">
+              <p class="fs-4">➜</p>
+            </div>
+          </a>
+        </div>
+      </div>
+      <div class="col-12 d-flex d-md-none justify-content-end mt-3 me-4">
+        <a href="news.html" class="d-flex justify-content-end align-items-center fw-bold lh-1 fs-6 font-gothic">
+          <p class="text-black mb-0 text-decoration-underline opacity">もっとみる→</p>
+        </a>
+      </div>
+      <div class="col-0 col-md-2"></div>
+    </div>
+  </div>
+{% endblock %}

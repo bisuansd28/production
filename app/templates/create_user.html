@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <a href="{{ url_for('main.admin') }}">admin</a>
+    <h1>ユーザー追加</h1>
+    <form method="post" novalidate>
+        {{form.id.label}} : {{form.id()}}
+        {% for error in form.id.errors %}
+        <span>{{error}}</span>
+        {% endfor %}
+        <br>
+        {{form.name.label}} : {{form.name()}}
+        {% for error in form.name.errors %}
+        <span>{{error}}</span>
+        {% endfor %}
+        <br>
+        {{form.pw.label}} : {{form.pw()}}
+        {% for error in form.pw.errors %}
+        <span>{{error}}</span>
+        {% endfor %}
+        <br>
+        {{form.submit()}}
+        {{form.hidden_tag()}}
+    </form>
+</body>
+</html>
