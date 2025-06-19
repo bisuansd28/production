@@ -1,16 +1,48 @@
 {% extends "layout.html" %}
 {% block title %} アンサンブル・シマエナガ {% endblock %}
 {% block content %}
-  <div class="container-fluid">
+  <div class="container-fluid py-3 py-md-4">
     <div class="row">
-      <div class="col-0 col-md-1"></div>
-      <div class="col-12 col-md-5">
-
+      <div class="d-none d-md-block col-md-1"></div>
+      <div class="d-none d-md-flex col-md-1 align-items-center justify-content-center">
+        <span id="prev" class="prev"></span>
       </div>
-      <div class="col-12 col-md-5">
-
+      <div class="d-none d-md-block col-12 col-md-4">
+        <div class="slide-wrapper">
+          <div class="slide">
+            {% for image in concert.images %}
+              <div>
+                <img src="{{ url_for('static', filename='uploads/' + image.path) }}" alt="" class="concert-image">
+              </div>
+            {% endfor %}
+          </div>
+          
+          <!-- <img src="{{ url_for('static', filename='images/concert3.jpg') }}" alt="" class="concert-image d-block mx-auto me-md-4"> -->
+        </div>
+        <ul class="indicator mt-3" id="indicator">
+            {% for _ in concert.images %}
+              <li class="list"></li>
+            {% endfor %}
+          </ul>
       </div>
-      <div class="col-0 col-md-1"></div>
+      <div class="d-none d-md-flex col-md-1 align-items-center justify-content-center">
+        <span id="next" class="next"></span>
+      </div>
+      <div class="col-12 col-md-4">
+        <div class="concert-text">
+          <p class="pt-0 pt-md-3 fs-2">{{ concert.title }}</p>
+          {{ concert.text | safe }}
+        </div>
+      </div>
+      <div class="d-block d-md-none col-12">
+        {% for image in concert.images %}
+          <div class="pb-1 pl-40px">
+            <img src="{{ url_for('static', filename='uploads/' + image.path) }}" alt="" class="concert-image">
+          </div>
+        {% endfor %}
+      </div>
+      <div class="d-none d-md-block col-md-1"></div>
     </div>
   </div>
+  <script src="{{ url_for('static', filename='js/concert.js') }}"></script>
 {% endblock %}

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <a href="{{ url_for('main.admin') }}">admin</a>
+    <h1>投稿リスト</h1>
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <ul>
+                {% for message in messages %}
+                    <li>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+    <a href="{{ url_for('main.create_concert') }}">投稿追加</a>
+    <ul>
+        {% for concert in concerts %}
+        <li>
+            {{ concert.id }} : {{ concert.title }}
+            {% if current_user.id == "taiyo" %}
+                <a href="{{ url_for('main.edit_concert', id=concert.id) }}">編集</a>
+                <a href="{{ url_for('main.delete_concert', id=concert.id) }}">削除</a>
+            {% endif %}
+        </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

@@ -3,3 +3,5 @@ flask_sqlalchemy
 Flask-WTF
 flask-login
 flask-paginate
+flask_admin
+markdown
