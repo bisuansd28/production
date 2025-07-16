@@ -17,47 +17,38 @@
             {% endfor %}
         </div>
 
-        <!-- テキスト -->
+        <!-- コンテンツ -->
         <div class="mb-3">
-            {{ form.text.label(class="form-label") }}
-            {{ form.text(class="form-control") }}
-            {% for error in form.text.errors %}
+            {{ form.content.label(class="form-label") }}
+            {{ form.content(class="form-control", id="text-area") }}
+            {% for error in form.content.errors %}
                 <div class="text-danger">{{ error }}</div>
             {% endfor %}
         </div>
 
-        <!-- URL -->
+        <!-- メディア -->
         <div class="mb-3">
-            {{ form.url.label(class="form-label") }}
-            {{ form.url(class="form-control") }}
-            {% for error in form.url.errors %}
+            {{ form.media.label(class="form-label") }}
+            {{ form.media(class="form-select") }}
+            {% for error in form.media.errors %}
                 <div class="text-danger">{{ error }}</div>
             {% endfor %}
         </div>
 
-        <!-- 画像 -->
-        <div class="mb-3">
-            {{ form.images.label(class="form-label") }}
-            {{ form.images(class="form-control") }}
-            {% for error in form.images.errors %}
+        <!-- ファイルアップロード -->
+        <div id="file-field" style="display: none;" class="mb-3">
+            {{ form.file.label(class="form-label") }}
+            {{ form.file(class="form-control") }}
+            {% for error in form.file.errors %}
                 <div class="text-danger">{{ error }}</div>
             {% endfor %}
         </div>
 
-        <!-- top -->
-        <div class="form-check mb-3">
-            {{ form.top(class="form-check-input") }}
-            {{ form.top.label(class="form-check-label") }}
-            {% for error in form.top.errors %}
-                <div class="text-danger">{{ error }}</div>
-            {% endfor %}
-        </div>
-
-        <!-- end -->
-        <div class="form-check mb-3">
-            {{ form.end(class="form-check-input") }}
-            {{ form.end.label(class="form-check-label") }}
-            {% for error in form.end.errors %}
+        <!-- YouTube -->
+        <div id="youtube-field" style="display: none;" class="mb-3">
+            {{ form.youtube.label(class="form-label") }}
+            {{ form.youtube(class="form-control") }}
+            {% for error in form.youtube.errors %}
                 <div class="text-danger">{{ error }}</div>
             {% endfor %}
         </div>
@@ -71,10 +62,25 @@
             {% endfor %}
         </div>
 
+        <!-- タグ -->
+        <div class="mb-3">
+            {{ form.tags.label(class="form-label") }}
+            {{ form.tags(class="form-control") }}
+            {% for error in form.tags.errors %}
+                <div class="text-danger">{{ error }}</div>
+            {% endfor %}
+        </div>
+
         <!-- 送信ボタン -->
         <div class="mb-3">
             {{ form.submit(class="btn btn-primary") }}
         </div>
     </form>
 </div>
+
+<script src="{{ url_for('static', filename='js/create_post.js') }}"></script>
+<script src="https://unpkg.com/autosize@4.0.2/dist/autosize.min.js"></script>
+<script>
+    autosize(document.getElementById('text-area'));
+</script>
 {% endblock %}

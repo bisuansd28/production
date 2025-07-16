@@ -1,5 +1,5 @@
-from flask import Flask
-from app.extensions import db, login_manager
+from flask import Flask, request
+from app.extensions import db, login_manager, limiter
 from app.routes.routes import main_bp
 from sqlalchemy import event
 from sqlalchemy.engine import Engine
@@ -19,6 +19,8 @@ def create_app():
     app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///app.db"
     db.init_app(app)
 
+    limiter.init_app(app)
+
     from app.models import models
 
     # blueprintの登録
@@ -30,7 +32,7 @@ def create_app():
 
     login_manager.init_app(app)
     from flask_admin import Admin
-    from app.admin_views import MyAdminIndexView, PostView, TagView, UserView, LogView, ConcertView, ConcertImageView
+    from app.admin_views import MyAdminIndexView, PostView, TagView, UserView, LogView, ConcertView, ConcertImageView, NoteImageView, NoteView, PostImageView, CounterView
     admin = Admin(name='Admin', url='/management', template_mode='bootstrap3', index_view=MyAdminIndexView())
     admin.init_app(app)
 
@@ -40,14 +42,18 @@ def create_app():
     def load_user(id):
         return User.query.get(id)
     
-    from app.models.models import Post, Tag, User, Log, Concert, ConcertImage
+    from app.models.models import Post, Tag, User, Log, Concert, ConcertImage, PostImage, Note, NoteImage, Counter
     
     admin.add_view(PostView(Post, db.session))
+    admin.add_view(PostImageView(PostImage, db.session))
     admin.add_view(TagView(Tag, db.session))
     admin.add_view(UserView(User, db.session))
     admin.add_view(LogView(Log, db.session))
     admin.add_view(ConcertView(Concert, db.session))
     admin.add_view(ConcertImageView(ConcertImage, db.session))
+    admin.add_view(NoteView(Note, db.session))
+    admin.add_view(NoteImageView(NoteImage, db.session))
+    admin.add_view(CounterView(Counter, db.session))
 
     app.permanent_session_lifetime = timedelta(days=9999)
 

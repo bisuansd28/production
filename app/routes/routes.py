@@ -1,8 +1,8 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session
 from flask_login import login_user, logout_user, login_required, current_user
 from flask_paginate import Pagination, get_page_parameter
-from app.models.models import Post, User, Log, Tag, Concert, ConcertImage, PostImage, Counter
-from app.extensions import db, login_manager
+from app.models.models import Post, User, Log, Tag, Concert, ConcertImage, PostImage, Counter, Note, NoteImage
+from app.extensions import db, login_manager, limiter
 from app.forms.forms import *
 from datetime import datetime, date, timedelta
 import os
@@ -41,7 +41,6 @@ def index():
         daily = Counter(date=today, access_count=0, user_count=user_count)
         db.session.add(daily)
         db.session.commit()
-
     now = datetime.now()
     last_visit = session.get("last_visit")
     if not last_visit:
@@ -56,10 +55,14 @@ def index():
     db.session.commit()
 
     posts = Post.query.order_by(Post.date.desc()).limit(5).all()
-    concert = Concert.query.filter_by(top=True).first()
     for post in posts:
         post.date_str = f"{post.date.year}年{post.date.month}月{post.date.day}日"
-    return render_template("index.html", posts=posts, concert=concert)
+    concert = Concert.query.filter_by(top=True).first()
+    note = Note.query.order_by(Note.date.desc()).limit(5).all()
+    for page in note:
+        page.date_str = f"{page.date.year}年{page.date.month}月{page.date.day}日"
+    
+    return render_template("index.html", posts=posts, concert=concert, note=note)
 
 @main_bp.route("/news")
 def news():
@@ -83,14 +86,37 @@ def article(id):
     article.date_str = f"{article.date.year}年{article.date.month}月{article.date.day}日"
     return render_template("article.html", article=article)
 
+@main_bp.route("/note")
+def note():
+    page_count = request.args.get(get_page_parameter(), type=int, default=1)
+    per_page = 10
+    all_page = Note.query.order_by(Note.date.desc()).all()
+    for page in all_page:
+        page.date_str = f"{page.date.year}年{page.date.month}月{page.date.day}日"
+    total = len(all_page)
+    note = all_page[(page_count - 1) * per_page: page_count * per_page]
+    pagination = Pagination(page=page_count, per_page=per_page, total=total, css_framework="boostrap5")
+    return render_template("note.html", note=note, pagination=pagination)
+
+@main_bp.route("/note/<int:id>")
+def page(id):
+    page = Note.query.get_or_404(id)
+    page.view_count += 1
+    db.session.commit()
+    page.text = markdown.markdown(page.content, extensions=['nl2br'])
+    page.date_str = f"{page.date.year}年{page.date.month}月{page.date.day}日"
+    return render_template("page.html", page=page)
+
 @main_bp.route("/concert")
 def concerts():
-    concerts = Concert.query.order_by(Concert.id.desc()).all()
-    return render_template("concerts.html", concerts=concerts)
+    future_concerts = Concert.query.filter_by(end=False).order_by(Concert.date.desc()).all()
+    end_concerts = Concert.query.filter_by(end=True).order_by(Concert.date.desc()).all()
+    return render_template("concerts.html", future_concerts=future_concerts, end_concerts=end_concerts)
 
-@main_bp.route("/concert/<int:id>")
-def concert(id):
-    concert = Concert.query.get(id)
+@main_bp.route("/concert/<string:url>")
+def concert(url):
+    concert = Concert.query.filter_by(url=url).first()
+    print(concert)
     concert.view_count += 1
     db.session.commit()
     concert.text = markdown.markdown(concert.text, extensions=['nl2br'])
@@ -115,11 +141,12 @@ def admin():
     return render_template("admin.html", count=count)
 
 @main_bp.route("/admin/login", methods=["GET", "POST"])
+@limiter.limit("10/hour;5/minute")
 def login():
     form = LoginForm()
     if form.validate_on_submit():
         id = form.id.data
-        pw = form.id.data
+        pw = form.pw.data
         user = User.query.filter_by(id=id).first()
         if user and check_password_hash(user.pw, pw):
             login_user(user)
@@ -152,6 +179,12 @@ def user():
 def post():
     posts = Post.query.all()
     return render_template("post_list.html", posts=posts)
+
+@main_bp.route("/admin/note")
+@login_required
+def kawagutisan():
+    note = Note.query.all()
+    return render_template("note_list.html", note=note)
 
 @main_bp.route("/admin/concert")
 @login_required
@@ -376,7 +409,7 @@ def delete_post(id):
 def create_concert():
     form = ConcertForm()
     if form.validate_on_submit():
-        concert = Concert(title=form.title.data, text=form.text.data)
+        concert = Concert(title=form.title.data, text=form.text.data, url=form.url.data, date=form.date.data)
         db.session.add(concert)
         db.session.commit()
         for file in form.images.data:
@@ -392,7 +425,9 @@ def create_concert():
             target_id=concert.id, 
             text=json.dumps({
                 "title" : concert.title, 
-                "text" : concert.text
+                "text" : concert.text, 
+                "url" : concert.url, 
+                "date" : concert.date.isoformat()
                         }, )
         )
         db.session.add(new_log)
@@ -408,8 +443,16 @@ def edit_concert(id):
     if form.validate_on_submit():
         old_title = concert.title
         old_text = concert.text
+        old_url = concert.url
+        old_top = concert.top
+        old_end = concert.end
+        old_date = concert.date
         concert.title = form.title.data
         concert.text = form.text.data
+        concert.url = form.url.data
+        concert.top = form.top.data
+        concert.end = form.end.data
+        concert.date = form.date.data
         for file in form.images.data:
             if file:
                 filename = datetime.now().strftime("%Y%m%d%H%M%S" + os.path.splitext(file.filename)[1])
@@ -426,7 +469,15 @@ def edit_concert(id):
                           "old_title" : old_title, 
                           "new_title" : concert.title, 
                           "old_text" : old_text, 
-                          "new_text" : concert.text
+                          "new_text" : concert.text, 
+                          "old_url" : old_url, 
+                          "new_url" : concert.url, 
+                          "old_top" : old_top, 
+                          "new_top" : concert.top, 
+                          "old_end" : old_end, 
+                          "new_end" : concert.end, 
+                          "old_date" : old_date.isoformat(), 
+                          "new_date" : concert.date.isoformat()
                         }, 
                         ensure_ascii=False))
         db.session.add(new_log)
@@ -453,3 +504,143 @@ def delete_concert(id):
     db.session.commit()
     flash("投稿削除完了")
     return redirect(url_for("main.concert_list"))
+
+@main_bp.route("/admin/note/create", methods=["GET", "POST"])
+@login_required
+def create_note():
+    form = NoteForm()
+    if form.validate_on_submit():
+        title = form.title.data
+        content = form.content.data
+        media = form.media.data
+        date = form.date.data
+        if media == "youtube":
+            url = convert_youtube_url_to_embed(form.youtube.data)
+        else:
+            url = None
+        tag_names = [t.strip() for t in form.tags.data.split(",") if t.strip()]
+        tags = []
+        for name in tag_names:
+            tag = Tag.query.filter_by(name=name).first()
+            if not tag:
+                tag = Tag(name=name)
+                db.session.add(tag)
+            tags.append(tag)
+        new_note = Note(title=title, content=content, media=media, url=url, tags=tags, date=date)
+        db.session.add(new_note)
+        db.session.commit()
+
+        for file in form.file.data:
+            if file:
+                filename = datetime.now().strftime("%Y%m%d%H%M%S" + os.path.splitext(file.filename)[1])
+                os.makedirs(upload_folder, exist_ok=True)
+                file.save(os.path.join(upload_folder, filename))
+                image = NoteImage(post_id=new_note.id, path=filename)
+                db.session.add(image)
+
+        new_log = Log(user_id=str(current_user.id), 
+                      action_type="create_note", 
+                      target_table="Note", 
+                      target_id=new_note.id, 
+                      text=json.dumps({"title" : title, 
+                                       "content" : content, 
+                                       "media" : media, 
+                                       "url" : url, 
+                                       "tag" : [tag.name for tag in tags]
+                                       }, 
+                                       ensure_ascii=False))
+        db.session.add(new_log)
+        db.session.commit()
+        flash("投稿完了")
+        return redirect(url_for("main.kawagutisan"))
+    return render_template("create_note.html", form=form)
+
+@main_bp.route("/admin/note/edit/<int:id>", methods=["GET", "POST"])
+@login_required
+def edit_note(id):
+    note = Note.query.get_or_404(id)
+    form = EditPost(obj=note)
+    if form.validate_on_submit():
+        old_title = note.title
+        old_content = note.content
+        old_media = note.media
+        old_url = note.url
+        old_date = note.date
+        old_tags = note.tags
+        note.title = form.title.data
+        note.content = form.content.data
+        note.media = form.media.data
+        note.date = form.date.data
+        if note.media == "youtube":
+            note.url = convert_youtube_url_to_embed(form.youtube.data)
+        else:
+            note.url = None
+        tag_names = [t.strip() for t in form.tags.data.split(",") if t.strip()]
+        print(form.tags.data)
+        tags = []
+        for name in tag_names:
+            tag = Tag.query.filter_by(name=name).first()
+            if not tag:
+                tag = Tag(name=name)
+                db.session.add(tag)
+            tags.append(tag)
+        note.tags = tags
+        db.session.commit()
+
+        for file in form.file.data:
+            if file:
+                filename = datetime.now().strftime("%Y%m%d%H%M%S" + os.path.splitext(file.filename)[1])
+                os.makedirs(upload_folder, exist_ok=True)
+                file.save(os.path.join(upload_folder, filename))
+                image = NoteImage(note_id=note.id, path=filename)
+                db.session.add(image)
+
+        new_log = Log(user_id=str(current_user.id), 
+                      action_type="edit_note", 
+                      target_table="note", 
+                      target_id=note.id, 
+                      text=json.dumps({
+                          "old_title" : old_title, 
+                          "new_title" : note.title, 
+                          "old_content" : old_content, 
+                          "new_content" : note.content, 
+                          "old_media" : old_media, 
+                          "new_media" : note.media, 
+                          "old_url" : old_url, 
+                          "new_url" : note.url, 
+                          "old_tags" : [tag.name for tag in old_tags], 
+                          "new_tags" : [tag.name for tag in note.tags], 
+                          "old_date" : old_date.isoformat(), 
+                          "new_date" : note.date.isoformat()
+                        }, 
+                        ensure_ascii=False))
+        db.session.add(new_log)
+        db.session.commit()
+        flash("編集完了")
+        return redirect(url_for("main.kawagutisan"))
+    else:
+        form.tags.data = ", ".join(tag.name for tag in note.tags)
+        if note.media == "youtube" and note.url:
+            form.youtube.data = note.url
+    return render_template("edit_note.html", form=form)
+
+@main_bp.route("/admin/note/delete/<int:id>")
+@login_required
+def delete_note(id):
+    note = Note.query.get_or_404(id)
+    new_log = Log(user_id=str(current_user.id), 
+                action_type="delete_note", 
+                target_table="note", 
+                target_id=note.id, 
+                text=json.dumps({
+                    "title" : note.title, 
+                    "content" : note.content, 
+                    "media" : note.media, 
+                    "url" : note.url
+                    }, 
+                    ensure_ascii=False))
+    db.session.delete(note)
+    db.session.add(new_log)
+    db.session.commit()
+    flash("投稿削除完了")
+    return redirect(url_for("main.kawagutisan"))

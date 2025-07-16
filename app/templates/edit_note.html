@@ -1,9 +1,9 @@
 {% extends "layout_admin.html" %}
-{% block title %}Admin | アンサンブル・シマエナガ{% endblock %}
+{% block title %}投稿編集 | アンサンブル・シマエナガ{% endblock %}
 
 {% block content %}
 <div class="container py-5">
-    <h1 class="fs-2 mb-4">投稿</h1>
+    <h1 class="fs-2 mb-4">投稿編集フォーム</h1>
 
     <form method="post" novalidate enctype="multipart/form-data">
         {{ form.hidden_tag() }}
@@ -17,7 +17,7 @@
             {% endfor %}
         </div>
 
-        <!-- 本文 -->
+        <!-- コンテンツ -->
         <div class="mb-3">
             {{ form.content.label(class="form-label") }}
             {{ form.content(class="form-control", id="text-area") }}
@@ -26,17 +26,17 @@
             {% endfor %}
         </div>
 
-        <!-- メディア種別選択 -->
+        <!-- メディア -->
         <div class="mb-3">
             {{ form.media.label(class="form-label") }}
-            {{ form.media(class="form-select list-unstyled") }}
+            {{ form.media(class="form-select") }}
             {% for error in form.media.errors %}
                 <div class="text-danger">{{ error }}</div>
             {% endfor %}
         </div>
 
-        <!-- ファイルアップロード -->
-        <div id="file-field" class="mb-3" style="display: none;">
+        <!-- ファイルアップロード（メディアがファイル時に表示） -->
+        <div id="file-field" style="display: none;" class="mb-3">
             {{ form.file.label(class="form-label") }}
             {{ form.file(class="form-control") }}
             {% for error in form.file.errors %}
@@ -44,8 +44,8 @@
             {% endfor %}
         </div>
 
-        <!-- YouTube URL -->
-        <div id="youtube-field" class="mb-3" style="display: none;">
+        <!-- YouTube URL（メディアがYouTube時に表示） -->
+        <div id="youtube-field" style="display: none;" class="mb-3">
             {{ form.youtube.label(class="form-label") }}
             {{ form.youtube(class="form-control") }}
             {% for error in form.youtube.errors %}
@@ -71,14 +71,13 @@
             {% endfor %}
         </div>
 
-        <!-- 送信 -->
+        <!-- 送信ボタン -->
         <div class="mb-3">
             {{ form.submit(class="btn btn-primary") }}
         </div>
     </form>
 </div>
 
-<!-- JS -->
 <script src="{{ url_for('static', filename='js/create_post.js') }}"></script>
 <script src="https://unpkg.com/autosize@4.0.2/dist/autosize.min.js"></script>
 <script>

@@ -1,7 +1,7 @@
 from flask_admin.contrib.sqla import ModelView
-from flask_admin import AdminIndexView, expose
+from flask_admin import AdminIndexView
 from flask_login import current_user
-from flask import redirect, url_for, request
+from flask import redirect, url_for
 from wtforms import StringField, RadioField
 from app.models.models import Concert
 from app.extensions import db
@@ -45,11 +45,19 @@ class PostView(ModelView):
     def is_accessible(self):
         return current_user.is_authenticated and current_user.id == "taiyo"
     
+class PostImageView(ModelView):
+    column_list = ["id", "post_id", "path"]
+    column_default_sort = ("id", True)
+    def is_accessible(self):
+        return current_user.is_authenticated and current_user.id == "taiyo"
+
 class UserView(ModelView):
     column_list = ["id", "name", "pw"]
     form_columns = ["id", "name", "pw"]
     column_default_sort = ("id", False)
-    # idをカスタムでStringFieldに差し替え
+    can_delete = False
+    can_create = False
+    can_edit = False
     form_extra_fields = {
         "id": StringField("User ID")
     }
@@ -71,7 +79,7 @@ class LogView(ModelView):
         return current_user.is_authenticated and current_user.id == "taiyo"
     
 class ConcertView(ModelView):
-    column_list = ["id", "title", "text", "top", "image", "view_count"]
+    column_list = ["id", "url", "title", "text", "top", "image", "end", "view_count"]
     column_default_sort = ("id", True)
     form_columns = ["title", "text", "top", "image"]
     form_args = {
@@ -93,6 +101,44 @@ class ConcertView(ModelView):
     
 class ConcertImageView(ModelView):
     column_list = ["id", "concert_id", "path"]
+    column_default_sort = ("id", True)
+    def is_accessible(self):
+        return current_user.is_authenticated and current_user.id == "taiyo"
+    
+class CounterView(ModelView):
+    column_list = ["id", "date", "access_count", "user_count", "date"]
+    column_default_sort = ("id", True)
+    def is_accessible(self):
+        return current_user.is_authenticated and current_user.id == "taiyo"
+
+class NoteView(ModelView):
+    column_list = ["id", "title", "content", "media", "url", "tags", "date", "view_count"]
+    form_columns = ["title", "content", "media", "url", "tags", "date"]
+    column_default_sort = ("id", True)
+
+    form_overrides = {
+        'media': RadioField,
+    }
+    form_args = {
+        'media': {
+            'choices': [
+                ('none', 'なし'),
+                ('upload', '画像・動画'),
+                ('youtube', 'youtube'),
+            ], 
+            'default': "none"
+        }
+    }
+    form_widget_args = {
+    'media': {
+        'class': 'form-check-input'
+    }
+    }
+    def is_accessible(self):
+        return current_user.is_authenticated and current_user.id == "taiyo"
+
+class NoteImageView(ModelView):
+    column_list = ["id", "note_id", "path"]
     column_default_sort = ("id", True)
     def is_accessible(self):
         return current_user.is_authenticated and current_user.id == "taiyo"

@@ -68,6 +68,9 @@ hr{
 .mb-line{
 	border-bottom: rgba(0, 0, 0, 0.3) solid 1px;
 }
+.bottom-line{
+	border-bottom: rgba(0, 0, 0, 0.3) solid 1px;
+}
 .pagination .page-link {
 	color: black;
 	background-color: #d0e7e1;
@@ -204,4 +207,10 @@ hr{
 
 .mb-1rem p{
 	margin-bottom: 1rem;
+}
+
+.googleform{
+	width:100%;
+	max-width:640px;
+	height: 1000px;
 }

@@ -1,9 +1,9 @@
 {% extends "layout_admin.html" %}
-{% block title %}ユーザーリスト | アンサンブル・シマエナガ{% endblock %}
+{% block title %}投稿リスト | アンサンブル・シマエナガ{% endblock %}
 
 {% block content %}
 <div class="container py-5">
-  <h1 class="fs-2 mb-4">ユーザーリスト</h1>
+  <h1 class="fs-2 mb-4">投稿リスト</h1>
 
   {% with messages = get_flashed_messages() %}
     {% if messages %}
@@ -17,18 +17,16 @@
     {% endif %}
   {% endwith %}
 
-  {% if current_user.id == "taiyo" %}
-    <a href="{{ url_for('main.create_user') }}" class="btn btn-primary mb-3">ユーザー追加</a>
-  {% endif %}
+  <a href="{{ url_for('main.create_note') }}" class="btn btn-primary mb-3">投稿追加</a>
 
   <ul class="list-group">
-    {% for user in users %}
+    {% for page in note %}
       <li class="list-group-item d-flex justify-content-between align-items-center">
-        <div>{{ user.id }} : {{ user.name }}</div>
+        <div>{{ page.id }} : {{ page.title }}</div>
         {% if current_user.id == "taiyo" %}
           <div>
-            <a href="{{ url_for('main.edit_user', id=user.id) }}" class="btn btn-sm btn-outline-secondary me-2">編集</a>
-            <a href="{{ url_for('main.delete_user', id=user.id) }}" class="btn btn-sm btn-outline-danger">削除</a>
+            <a href="{{ url_for('main.edit_note', id=page.id) }}" class="btn btn-sm btn-outline-secondary me-2">編集</a>
+            <a href="{{ url_for('main.delete_note', id=page.id) }}" class="btn btn-sm btn-outline-danger">削除</a>
           </div>
         {% endif %}
       </li>

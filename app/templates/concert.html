@@ -5,7 +5,9 @@
     <div class="row">
       <div class="d-none d-md-block col-md-1"></div>
       <div class="d-none d-md-flex col-md-1 align-items-center justify-content-center">
-        <span id="prev" class="prev"></span>
+        {% if concert.images[1] %}
+          <span id="prev" class="prev"></span>
+        {% endif %}
       </div>
       <div class="d-none d-md-block col-12 col-md-4">
         <div class="slide-wrapper">
@@ -16,17 +18,20 @@
               </div>
             {% endfor %}
           </div>
-          
           <!-- <img src="{{ url_for('static', filename='images/concert3.jpg') }}" alt="" class="concert-image d-block mx-auto me-md-4"> -->
         </div>
-        <ul class="indicator mt-3" id="indicator">
+        {% if concert.images[1] %}
+          <ul class="indicator mt-3" id="indicator">
             {% for _ in concert.images %}
               <li class="list"></li>
             {% endfor %}
           </ul>
+        {% endif %}
       </div>
       <div class="d-none d-md-flex col-md-1 align-items-center justify-content-center">
-        <span id="next" class="next"></span>
+        {% if concert.images[1] %}
+          <span id="next" class="next"></span>
+        {% endif %}
       </div>
       <div class="col-12 col-md-4">
         <div class="concert-text">

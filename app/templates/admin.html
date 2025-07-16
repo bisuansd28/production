@@ -1,30 +1,62 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <p>{{ current_user.name }} でログイン中</p>
-    <p>アクセスユーザー数 : {{ count.user_count }}</p>
-    <p>アクセス数 : {{ count.access_count }}</p>
+{% extends "layout_admin.html" %}
+{% block title %}Admin | アンサンブル・シマエナガ{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h1 class="fs-2 mb-4">Admin</h1>
+
+    <!-- ユーザー情報 -->
+    <div class="mb-4">
+        <p><strong>ログインユーザー:</strong> {{ current_user.name }}</p>
+        <p><strong>アクセスユーザー数:</strong> {{ count.user_count }}</p>
+        <p><strong>総アクセス数:</strong> {{ count.access_count }}</p>
+    </div>
+
+    <!-- フラッシュメッセージ -->
     {% with messages = get_flashed_messages() %}
         {% if messages %}
-            <ul>
-                {% for message in messages %}
-                    <li>{{ message }}</li>
-                {% endfor %}
-            </ul>
+            <div class="alert alert-warning" role="alert">
+                <ul class="mb-0">
+                    {% for message in messages %}
+                        <li>{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
         {% endif %}
     {% endwith %}
-    <a href="{{ url_for('main.index') }}">Index</a><br>
-    {% if current_user.id == "taiyo" %}
-        <a href="/management">Flask-admin</a><br>
-    {% endif %}
-    <a href="{{ url_for('main.user') }}">User list</a><br>
-    <a href="{{ url_for('main.post') }}">Post list</a><br>
-    <a href="{{ url_for('main.concert_list') }}">Concert list</a><br>
-    <a href="{{ url_for('main.logout') }}">Logout</a><br>
-</body>
-</html>
+
+    <!-- 管理メニュー -->
+    <div class="row g-3">
+        <div class="col-md-6">
+            <a href="{{ url_for('main.index') }}" class="btn btn-outline-dark w-100">🏠 トップページ</a>
+        </div>
+
+        <div class="col-md-6">
+            <a href="{{ url_for('main.post') }}" class="btn btn-outline-dark w-100">📝 投稿一覧</a>
+        </div>
+
+        <div class="col-md-6">
+            <a href="{{ url_for('main.concert_list') }}" class="btn btn-outline-dark w-100">🎵 演奏会リスト</a>
+        </div>
+
+        <div class="col-md-6">
+            <a href="{{ url_for('main.kawagutisan') }}" class="btn btn-outline-dark w-100">🌸 Kawagutisan</a>
+        </div>
+
+        {% if current_user.id == "taiyo" %}
+        <div class="col-md-6">
+            <a href="/management" class="btn btn-outline-secondary w-100">🛠 Flask-admin</a>
+        </div>
+        
+        <div class="col-md-6">
+            <a href="{{ url_for('main.user') }}" class="btn btn-outline-dark w-100 ">👥 ユーザー一覧</a>
+        </div>
+        {% endif %}
+
+        <div class="col-md-6">
+            <a href="{{ url_for('main.logout') }}" class="btn btn-danger w-100">🚪 ログアウト</a>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

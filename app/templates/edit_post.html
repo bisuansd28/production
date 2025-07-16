@@ -1,67 +1,86 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <!DOCTYPE html>
-<html lang="ja">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <a href="{{ url_for('main.admin') }}">admin</a>
-    <h1>投稿編集</h1>
-    <form method="post" novalidate enctype="multipart/form-data">
-        {{form.title.label}} : {{form.title()}}
-        {% for error in form.title.errors %}
-        <span>{{error}}</span>
-        {% endfor %}
-        <br>
-        {{form.content.label}} : {{form.content(id="text-area")}}
-        {% for error in form.content.errors %}
-        <span>{{error}}</span>
-        {% endfor %}
-        <br>
-        {{form.media.label}} : {{form.media()}}
-        {% for error in form.media.errors %}
-        <span>{{error}}</span>
-        {% endfor %}
-        <br>
-        <div id="file-field" style="display: none;">
-            {{form.file.label}} : {{form.file()}}
-            {% for error in form.file.errors %}
-            <span>{{error}}</span>
-        {% endfor %}
-        </div>
-        <div id="youtube-field" style="display: none;">
-        <br>
-        {{form.youtube.label}} : {{form.youtube()}}
-        {% for error in form.youtube.errors %}
-        <span>{{error}}</span>
-        {% endfor %}
-        </div>
-        {{form.date.label}} : {{form.date()}}
-        {% for error in form.date.errors %}
-        <span>{{error}}</span>
-        {% endfor %}
-        <br>
-        {{form.tags.label}} : {{form.tags()}}
-        {% for error in form.tags.errors %}
-        <span>{{error}}</span>
-        {% endfor %}
-        <br>
-        {{form.submit()}}
-        {{form.hidden_tag()}}
-    </form>
-    <script src="{{ url_for('static', filename='js/create_post.js') }}"></script>
-    <script src="https://unpkg.com/autosize@4.0.2/dist/autosize.min.js"></script>
-    <script>
-        autosize(document.getElementById('text-area'));
-    </script>
-</body>
-</html>
+{% extends "layout_admin.html" %}
+{% block title %}投稿編集 | アンサンブル・シマエナガ{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <h1 class="fs-2 mb-4">投稿編集フォーム</h1>
+
+  <form method="post" novalidate enctype="multipart/form-data">
+    {{ form.hidden_tag() }}
+
+    <!-- タイトル -->
+    <div class="mb-3">
+      {{ form.title.label(class="form-label") }}
+      {{ form.title(class="form-control") }}
+      {% for error in form.title.errors %}
+        <div class="text-danger">{{ error }}</div>
+      {% endfor %}
+    </div>
+
+    <!-- コンテンツ -->
+    <div class="mb-3">
+      {{ form.content.label(class="form-label") }}
+      {{ form.content(class="form-control", id="text-area") }}
+      {% for error in form.content.errors %}
+        <div class="text-danger">{{ error }}</div>
+      {% endfor %}
+    </div>
+
+    <!-- メディア -->
+    <div class="mb-3">
+      {{ form.media.label(class="form-label") }}
+      {{ form.media(class="form-select") }}
+      {% for error in form.media.errors %}
+        <div class="text-danger">{{ error }}</div>
+      {% endfor %}
+    </div>
+
+    <!-- ファイルアップロード -->
+    <div id="file-field" style="display:none;" class="mb-3">
+      {{ form.file.label(class="form-label") }}
+      {{ form.file(class="form-control") }}
+      {% for error in form.file.errors %}
+        <div class="text-danger">{{ error }}</div>
+      {% endfor %}
+    </div>
+
+    <!-- YouTube URL -->
+    <div id="youtube-field" style="display:none;" class="mb-3">
+      {{ form.youtube.label(class="form-label") }}
+      {{ form.youtube(class="form-control") }}
+      {% for error in form.youtube.errors %}
+        <div class="text-danger">{{ error }}</div>
+      {% endfor %}
+    </div>
+
+    <!-- 日付 -->
+    <div class="mb-3">
+      {{ form.date.label(class="form-label") }}
+      {{ form.date(class="form-control") }}
+      {% for error in form.date.errors %}
+        <div class="text-danger">{{ error }}</div>
+      {% endfor %}
+    </div>
+
+    <!-- タグ -->
+    <div class="mb-3">
+      {{ form.tags.label(class="form-label") }}
+      {{ form.tags(class="form-control") }}
+      {% for error in form.tags.errors %}
+        <div class="text-danger">{{ error }}</div>
+      {% endfor %}
+    </div>
+
+    <!-- 送信ボタン -->
+    <div class="mb-3">
+      {{ form.submit(class="btn btn-primary") }}
+    </div>
+  </form>
+</div>
+
+<script src="{{ url_for('static', filename='js/create_post.js') }}"></script>
+<script src="https://unpkg.com/autosize@4.0.2/dist/autosize.min.js"></script>
+<script>
+  autosize(document.getElementById('text-area'));
+</script>
+{% endblock %}

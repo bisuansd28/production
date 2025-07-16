@@ -1,31 +1,44 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <a href="{{ url_for('main.admin') }}">admin</a>
-    <h1>ユーザー編集</h1>
-    <form method="post" novalidate>
-        {{form.id.label}} : {{form.id()}}
-        {% for error in form.id.errors %}
-        <span>{{error}}</span>
-        {% endfor %}
-        <br>
-        {{form.name.label}} : {{form.name()}}
-        {% for error in form.name.errors %}
-        <span>{{error}}</span>
-        {% endfor %}
-        <br>
-        {{form.pw.label}} : {{form.pw()}}
-        {% for error in form.pw.errors %}
-        <span>{{error}}</span>
-        {% endfor %}
-        <br>
-        {{form.submit()}}
-        {{form.hidden_tag()}}
-    </form>
-</body>
-</html>
+{% extends "layout_admin.html" %}
+{% block title %}ユーザー編集 | アンサンブル・シマエナガ{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <h1 class="fs-2 mb-4">ユーザー編集フォーム</h1>
+
+  <form method="post" novalidate>
+    {{ form.hidden_tag() }}
+
+    <!-- ID -->
+    <div class="mb-3">
+      {{ form.id.label(class="form-label") }}
+      {{ form.id(class="form-control") }}
+      {% for error in form.id.errors %}
+        <div class="text-danger">{{ error }}</div>
+      {% endfor %}
+    </div>
+
+    <!-- 名前 -->
+    <div class="mb-3">
+      {{ form.name.label(class="form-label") }}
+      {{ form.name(class="form-control") }}
+      {% for error in form.name.errors %}
+        <div class="text-danger">{{ error }}</div>
+      {% endfor %}
+    </div>
+
+    <!-- パスワード -->
+    <div class="mb-3">
+      {{ form.pw.label(class="form-label") }}
+      {{ form.pw(class="form-control", type="password") }}
+      {% for error in form.pw.errors %}
+        <div class="text-danger">{{ error }}</div>
+      {% endfor %}
+    </div>
+
+    <!-- 送信 -->
+    <div class="mb-3">
+      {{ form.submit(class="btn btn-primary") }}
+    </div>
+  </form>
+</div>
+{% endblock %}

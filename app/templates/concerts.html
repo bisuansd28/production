@@ -1,0 +1,61 @@
+{% extends "layout.html" %}
+{% block title %} アンサンブル・シマエナガ {% endblock %}
+{% block content %}
+  <div class="container-fluid py-4 pb-md-3 pt-md-5">
+    {% set total = future_concerts|length %}
+    {% for concert in future_concerts %}
+      {% if loop.index0 % 3 == 0 %}
+        <div class="row justify-content-center align-items-center text-center mb-4">
+      {% endif %}
+
+      <div class="col-12 col-md-3">
+        <p class="fs-5 ps-2 bottom-line mb-3 text-start">{{ concert.title }}</p>
+        <div class="px-2 mb-3">
+          <a href="{{ url_for('main.concert', url=concert.url) }}">
+            <img src="{{ url_for('static', filename='uploads/' ~ concert.images[0].path) }}" alt="" class="concert-image">
+          </a>
+        </div>
+      </div>
+      {% if loop.index0 % 3 == 2 or loop.last %}
+        {% if loop.last and total % 3 != 0 %}
+          {% set remainder = 3 - (total % 3) %}
+          {% for i in range(remainder) %}
+            <div class="col-12 col-md-3"></div>
+          {% endfor %}
+        {% endif %}
+        </div>
+      {% endif %}
+    {% endfor %}
+
+		<div class="row justify-content-center align-items-center text-center">
+      <p class="col-12 col-md-10 fw-100 fs-2 lh-1 font-gothic text-start mb-3 mb-md-3 py-2">過去の演奏会</p>
+		</div>
+		{% set total = end_concerts|length %}
+    {% for concert in end_concerts %}
+      {% if loop.index0 % 3 == 0 %}
+        <div class="row justify-content-center align-items-center text-center mb-4">
+      {% endif %}
+
+      <div class="col-12 col-md-3">
+        <p class="fs-5 ps-2 bottom-line mb-3 text-start">{{ concert.title }}</p>
+        <div class="px-2 mb-3">
+          <a href="{{ url_for('main.concert', url=concert.url) }}">
+            <img src="{{ url_for('static', filename='uploads/' ~ concert.images[0].path) }}" alt="" class="concert-image">
+          </a>
+        </div>
+      </div>
+			
+			<!-- 演奏会増えてきたら東混みたいにaタグでタイトルだけ出す？ -->
+
+      {% if loop.index0 % 3 == 2 or loop.last %}
+        {% if loop.last and total % 3 != 0 %}
+          {% set remainder = 3 - (total % 3) %}
+          {% for i in range(remainder) %}
+            <div class="col-12 col-md-3"></div>
+          {% endfor %}
+        {% endif %}
+        </div>
+      {% endif %}
+    {% endfor %}
+  </div>
+{% endblock %}
