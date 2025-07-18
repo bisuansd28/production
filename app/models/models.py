@@ -1,5 +1,5 @@
 from app.extensions import db
-from datetime import date
+from datetime import date, datetime
 from flask_login import UserMixin
 
 post_tags = db.Table("post_tags", 
@@ -54,7 +54,7 @@ class Log(db.Model):
     target_table = db.Column(db.String(16))
     target_id = db.Column(db.String(16))
     text = db.Column(db.Text)
-    timestamp = db.Column(db.Date, default=date.today)
+    timestamp = db.Column(db.DateTime, default=datetime.now)
     
 class Concert(db.Model):
     __tablename__ = "concerts"

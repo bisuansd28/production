@@ -8,7 +8,7 @@ with app.app_context():
     from app.models.models import User
     from werkzeug.security import generate_password_hash
     if not User.query.first():
-        db.session.add(User(id="taiyo", name="taiyo", pw=generate_password_hash("taiyo")))
+        db.session.add(User(id="", name="", pw=generate_password_hash("")))
         db.session.commit()
 
 if __name__ == "__main__":

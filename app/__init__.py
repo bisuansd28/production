@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask
 from app.extensions import db, login_manager, limiter
 from app.routes.routes import main_bp
 from sqlalchemy import event
@@ -28,7 +28,7 @@ def create_app():
     app.register_blueprint(main_bp)
 
     # wtf用
-    app.config["SECRET_KEY"] = "f4fb392f440d1731b8c09a0b6f588559a03081b0cf705612008a04c4aaef89b5"
+    app.config["SECRET_KEY"] = "8fe8576e1babe36dbcb59e2d27dc2309ac47ec609ec8c332b932623cc3502a6c"
 
     login_manager.init_app(app)
     from flask_admin import Admin

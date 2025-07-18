@@ -7,7 +7,7 @@
 
     <!-- ユーザー情報 -->
     <div class="mb-4">
-        <p><strong>ログインユーザー:</strong> {{ current_user.name }}</p>
+        <p><strong>ログインユーザー:</strong> {{ current_user.name }}    <a href="{{ url_for('main.edit_user', id=current_user.id) }}">編集</a></p>
         <p><strong>アクセスユーザー数:</strong> {{ count.user_count }}</p>
         <p><strong>総アクセス数:</strong> {{ count.access_count }}</p>
     </div>

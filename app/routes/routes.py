@@ -126,14 +126,6 @@ def concert(url):
 def join_us():
     return render_template("joinus.html")
 
-# 後で消す開発用
-@main_bp.route("/dev")
-def dev():
-    id = "taiyo"
-    user = User.query.filter_by(id=id).first()
-    login_user(user)
-    return render_template("admin.html")
-
 @main_bp.route("/admin")
 @login_required
 def admin():
@@ -141,7 +133,7 @@ def admin():
     return render_template("admin.html", count=count)
 
 @main_bp.route("/admin/login", methods=["GET", "POST"])
-@limiter.limit("10/hour;5/minute")
+@limiter.limit("60/hour;5/minute", methods=["POST"])
 def login():
     form = LoginForm()
     if form.validate_on_submit():
@@ -219,7 +211,8 @@ def create_user():
 def edit_user(id):
     user = User.query.get_or_404(id)
     form = EditUser(obj=user)
-    form.pw.data = ""
+    if request.method == "GET":
+        form.pw.data = ""
     if form.validate_on_submit():
         old_id = user.id
         old_name = user.name
